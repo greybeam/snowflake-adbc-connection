@@ -1,0 +1,5 @@
+adbc_driver_snowflake
+duckdb
+pyarrow
+python-dotenv
+cryptography
