@@ -2,37 +2,28 @@ import adbc_driver_snowflake.dbapi
 import duckdb
 import dotenv
 import os
-# from read_private_key import read_private_key # Uncomment if you're using a private key
+from read_private_key import read_private_key # Uncomment if you're using a private key
 
 # Load environment variables
 dotenv.load_dotenv()
 
 # Configuration for Snowflake connection
-# pem_key = read_private_key(os.getenv('SNOWFLAKE_PRIVATE_KEY_PATH'), os.getenv('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE'))
+pem_key = read_private_key(os.getenv('SNOWFLAKE_PRIVATE_KEY_PATH'), os.getenv('SNOWFLAKE_PRIVATE_KEY_PASSPHRASE'))
 
 SNOWFLAKE_CONFIG = {
-    'account': os.getenv('SNOWFLAKE_ACCOUNT'),
-    'warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
-    'role': os.getenv('SNOWFLAKE_ROLE'),
-    'database': os.getenv('SNOWFLAKE_DATABASE'),
-    'user': os.getenv('SNOWFLAKE_USER'),
-    'password': os.getenv('SNOWFLAKE_PASSWORD'), # Comment this line if you want to use a password
-    # 'adbc.snowflake.sql.client_option.jwt_private_key_pkcs8_value': pem_key, # Comment this line if you want to use a password
-    # 'adbc.snowflake.sql.auth_type': 'auth_jwt' # Comment this line if you want to use a password
+    'adbc.snowflake.sql.account': os.getenv('SNOWFLAKE_ACCOUNT'),
+    'adbc.snowflake.sql.warehouse': os.getenv('SNOWFLAKE_WAREHOUSE'),
+    'adbc.snowflake.sql.role': os.getenv('SNOWFLAKE_ROLE'),
+    'adbc.snowflake.sql.database': os.getenv('SNOWFLAKE_DATABASE'),
+    'username': os.getenv('SNOWFLAKE_USER'),
+    # 'password': os.getenv('SNOWFLAKE_PASSWORD'), # Uncomment this line if you want to use a password
+    'adbc.snowflake.sql.client_option.jwt_private_key_pkcs8_value': pem_key, # Comment this line if you want to use a password
+    'adbc.snowflake.sql.auth_type': 'auth_jwt' # Comment this line if you want to use a password
 }
 
 # Create Snowflake connection
 snowflake_conn = adbc_driver_snowflake.dbapi.connect(
-    db_kwargs={
-        'adbc.snowflake.sql.account': SNOWFLAKE_CONFIG['account'],
-        'adbc.snowflake.sql.warehouse': SNOWFLAKE_CONFIG['warehouse'],
-        'adbc.snowflake.sql.role': SNOWFLAKE_CONFIG['role'],
-        'adbc.snowflake.sql.database': SNOWFLAKE_CONFIG['database'],
-        'username': SNOWFLAKE_CONFIG['user'],
-        'password': SNOWFLAKE_CONFIG['password'], # Comment this line if you want to use a password
-        # 'adbc.snowflake.sql.client_option.jwt_private_key_pkcs8_value': pem_key, # Uncomment this line if you want to use a password
-        # 'adbc.snowflake.sql.auth_type': 'auth_jwt' # Uncomment this line if you want to use a password
-    }
+    db_kwargs={**SNOWFLAKE_CONFIG}
 )
 print("Connection to Snowflake successful.")
 snowflake_cursor = snowflake_conn.cursor()
